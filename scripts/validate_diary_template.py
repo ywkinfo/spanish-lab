@@ -56,20 +56,20 @@ def main() -> int:
 
     # Assert SFX structures
     assert hasattr(tmpl, "SFX_MANIFEST") and isinstance(tmpl.SFX_MANIFEST, list), "SFX_MANIFEST must be a list"
-    if tmpl.SFX_MANIFEST:
-        sfx = tmpl.SFX_MANIFEST[0]
-        for key in ["id", "kind", "scene_id", "path", "volume_db"]:
-            assert key in sfx, f"SFX_MANIFEST missing key: {key}"
+    for idx, sfx in enumerate(tmpl.SFX_MANIFEST):
+        for key in ["id", "kind", "scene_id", "line_index", "offset_s", "path", "volume_db", "license"]:
+            assert key in sfx, f"SFX_MANIFEST item at index {idx} missing key: {key}"
+        assert sfx["kind"] == "spot", f"SFX_MANIFEST item at index {idx} 'kind' must be 'spot', got {sfx['kind']}"
 
     assert hasattr(tmpl, "SEGMENT_SFX") and isinstance(tmpl.SEGMENT_SFX, list), "SEGMENT_SFX must be a list"
     assert len(tmpl.SEGMENT_SFX) == 3, f"SEGMENT_SFX must contain exactly 3 items, got {len(tmpl.SEGMENT_SFX)}"
     seg_types = {item.get("segment_type") for item in tmpl.SEGMENT_SFX}
     expected_types = {"intro", "montage", "outro"}
     assert seg_types == expected_types, f"SEGMENT_SFX must cover exactly {expected_types}, got {seg_types}"
-    for item in tmpl.SEGMENT_SFX:
-        for key in ["id", "kind", "segment_type", "mode", "path", "volume_db"]:
-            assert key in item, f"SEGMENT_SFX item missing key: {key}"
-            assert item["kind"] == "segment", f"SEGMENT_SFX item 'kind' must be 'segment', got {item['kind']}"
+    for idx, item in enumerate(tmpl.SEGMENT_SFX):
+        for key in ["id", "kind", "segment_type", "mode", "offset_s", "path", "volume_db", "license"]:
+            assert key in item, f"SEGMENT_SFX item at index {idx} missing key: {key}"
+        assert item["kind"] == "segment", f"SEGMENT_SFX item at index {idx} 'kind' must be 'segment', got {item['kind']}"
 
     # Assert SEGMENTS & DESIGN & AUDIO
     assert hasattr(tmpl, "SEGMENTS") and isinstance(tmpl.SEGMENTS, list), "SEGMENTS must be a list"

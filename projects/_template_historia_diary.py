@@ -360,7 +360,14 @@ def _build_diary_segments() -> list[dict]:
 SEGMENTS = _build_diary_segments()
 CHAPTERS = [
     {"segment": 1, "title": "Introducción"},
-    {"segment": 2, "title": "[TODO: SCENE_1]"},
+    {"segment": 2, "title": "[TODO: SCENE_1_TITLE]"},
+    {"segment": 5, "title": "[TODO: SCENE_2_TITLE]"},
+    {"segment": 8, "title": "[TODO: SCENE_3_TITLE]"},
+    {"segment": 11, "title": "[TODO: SCENE_4_TITLE]"},
+    {"segment": 14, "title": "[TODO: SCENE_5_TITLE]"},
+    {"segment": 17, "title": "[TODO: SCENE_6_TITLE]"},
+    {"segment": 20, "title": "[TODO: SCENE_7_TITLE]"},
+    {"segment": 23, "title": "[TODO: SCENE_8_TITLE]"},
     {"segment": len(SEGMENTS), "title": "Repaso final"},
 ]
 AUDIO = {

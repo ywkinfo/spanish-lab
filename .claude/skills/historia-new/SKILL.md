@@ -1,6 +1,6 @@
 ---
-name: historia-new
 description: Initialize and plan a new Spanish Lab long-form 'historia-a1' diary project from template, including story planning, visual sizing, and 3-layer SFX configuration.
+argument-hint: "<episode_id> <slug> <topic>"
 ---
 
 # Skill: Creating a New Historia Diary Episode (`historia-new`)

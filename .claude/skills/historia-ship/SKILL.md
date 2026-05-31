@@ -1,6 +1,6 @@
 ---
-name: historia-ship
 description: Validate, render (preview/production), publish, and verify a Spanish Lab long-form 'historia-a1' diary project using the Makefile targets and publishing script.
+argument-hint: "<project_module>"
 ---
 
 # Skill: Shipping a Historia Diary Episode (`historia-ship`)
