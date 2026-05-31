@@ -22,8 +22,8 @@ Audio Specification Baseline:
 Workflow:
 1. Inspect `AUDIO` configurations, scene beds, spot manifests, or segment beds.
 2. Edit target volumes, offsets, or paths. Register licenses in `assets/audio/LICENSE.md`.
-3. For cards: Run `PROJECT=<module> make tts && make preview-cards`.
-4. For diary: Run `PROJECT=<module> make check && make preview-diary`.
+3. For cards: Run `PROJECT=<module> make tts && PROJECT=<module> make preview-cards`.
+4. For diary: Run `PROJECT=<module> make check && PROJECT=<module> make preview-diary`.
 5. Fast Audio-Only Rebuild:
    If ONLY audio configuration or SFX values changed, you can re-mix BGM/SFX without triggering a heavy video re-render by running the audio pipeline tools directly (reusing `silent.mp4` or calling `mix_sfx_layer` and `mix_with_bgm` directly) to save time, but ensure final `make verify` is clean.
 

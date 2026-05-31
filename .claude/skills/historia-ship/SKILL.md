@@ -1,3 +1,8 @@
+---
+name: historia-ship
+description: Validate, render (preview/production), publish, and verify a Spanish Lab long-form 'historia-a1' diary project using the Makefile targets and publishing script.
+---
+
 # Skill: Shipping a Historia Diary Episode (`historia-ship`)
 
 This skill defines the turnkey workflow for rendering, packaging, verifying, and preparing a diary-type episode (`RENDER_TYPE = "diary"`) for publication.
@@ -44,7 +49,7 @@ PROJECT=<module> make render-diary
 ### 6. Publish and Packaging
 Do not run `make publish-diary` directly (which triggers a redundant duplicate render). Instead, run the publisher script on the existing output:
 ```bash
-.venv/bin/python -m build.publish
+PROJECT=<module> .venv/bin/python -m build.publish
 ```
 - **Thumbnail Handling**:
   - If `THUMBNAIL_PATH` is specified in the project file, it must exist under the repository root, and will be copied over.
@@ -55,5 +60,6 @@ Do not run `make publish-diary` directly (which triggers a redundant duplicate r
 ```bash
 PROJECT=<module> make verify
 ```
-- Runs `probe_output.py` on the final mp4 inside `output/publish/` to ensure correct framerate, resolution (1920x1080), audio codecs, and normalized loudness targets (-14 LUFS).
+- Runs `probe_output.py` on the final mp4 at `output/$(OUTPUT_NAME).mp4` (defined in the project module) to ensure correct framerate, resolution (1920x1080), audio codecs, and normalized loudness targets (-14 LUFS).
 - The output bundle is now ready for manual upload to YouTube.
+

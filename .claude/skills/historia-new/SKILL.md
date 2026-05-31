@@ -1,3 +1,8 @@
+---
+name: historia-new
+description: Initialize and plan a new Spanish Lab long-form 'historia-a1' diary project from template, including story planning, visual sizing, and 3-layer SFX configuration.
+---
+
 # Skill: Creating a New Historia Diary Episode (`historia-new`)
 
 This skill defines the turnkey workflow for authoring a new long-form mini-story episode (`RENDER_TYPE = "diary"`) in the Spanish Lab repository.

@@ -115,6 +115,125 @@ STORY_SCENES = [
             },
         ],
     },
+    {
+        "scene_id": 2,
+        "title_es": "[TODO: SCENE_2_TITLE_ES]",
+        "title_ko": "[TODO: SCENE_2_TITLE_KO]",
+        "image_path": "",
+        "ambient_sfx": "",
+        "ambient_sfx_license": "CC0",
+        "pause_s": 2.0,
+        "lines": [
+            {
+                "kind": "narration",
+                "speaker": "",
+                "text_es": "[TODO: LINE_ES]",
+                "text_ko": "[TODO: LINE_KO]",
+            },
+        ],
+    },
+    {
+        "scene_id": 3,
+        "title_es": "[TODO: SCENE_3_TITLE_ES]",
+        "title_ko": "[TODO: SCENE_3_TITLE_KO]",
+        "image_path": "",
+        "ambient_sfx": "",
+        "ambient_sfx_license": "CC0",
+        "pause_s": 2.0,
+        "lines": [
+            {
+                "kind": "narration",
+                "speaker": "",
+                "text_es": "[TODO: LINE_ES]",
+                "text_ko": "[TODO: LINE_KO]",
+            },
+        ],
+    },
+    {
+        "scene_id": 4,
+        "title_es": "[TODO: SCENE_4_TITLE_ES]",
+        "title_ko": "[TODO: SCENE_4_TITLE_KO]",
+        "image_path": "",
+        "ambient_sfx": "",
+        "ambient_sfx_license": "CC0",
+        "pause_s": 2.0,
+        "lines": [
+            {
+                "kind": "narration",
+                "speaker": "",
+                "text_es": "[TODO: LINE_ES]",
+                "text_ko": "[TODO: LINE_KO]",
+            },
+        ],
+    },
+    {
+        "scene_id": 5,
+        "title_es": "[TODO: SCENE_5_TITLE_ES]",
+        "title_ko": "[TODO: SCENE_5_TITLE_KO]",
+        "image_path": "",
+        "ambient_sfx": "",
+        "ambient_sfx_license": "CC0",
+        "pause_s": 2.0,
+        "lines": [
+            {
+                "kind": "narration",
+                "speaker": "",
+                "text_es": "[TODO: LINE_ES]",
+                "text_ko": "[TODO: LINE_KO]",
+            },
+        ],
+    },
+    {
+        "scene_id": 6,
+        "title_es": "[TODO: SCENE_6_TITLE_ES]",
+        "title_ko": "[TODO: SCENE_6_TITLE_KO]",
+        "image_path": "",
+        "ambient_sfx": "",
+        "ambient_sfx_license": "CC0",
+        "pause_s": 2.0,
+        "lines": [
+            {
+                "kind": "narration",
+                "speaker": "",
+                "text_es": "[TODO: LINE_ES]",
+                "text_ko": "[TODO: LINE_KO]",
+            },
+        ],
+    },
+    {
+        "scene_id": 7,
+        "title_es": "[TODO: SCENE_7_TITLE_ES]",
+        "title_ko": "[TODO: SCENE_7_TITLE_KO]",
+        "image_path": "",
+        "ambient_sfx": "",
+        "ambient_sfx_license": "CC0",
+        "pause_s": 2.0,
+        "lines": [
+            {
+                "kind": "narration",
+                "speaker": "",
+                "text_es": "[TODO: LINE_ES]",
+                "text_ko": "[TODO: LINE_KO]",
+            },
+        ],
+    },
+    {
+        "scene_id": 8,
+        "title_es": "[TODO: SCENE_8_TITLE_ES]",
+        "title_ko": "[TODO: SCENE_8_TITLE_KO]",
+        "image_path": "",
+        "ambient_sfx": "",
+        "ambient_sfx_license": "CC0",
+        "pause_s": 2.0,
+        "lines": [
+            {
+                "kind": "narration",
+                "speaker": "",
+                "text_es": "[TODO: LINE_ES]",
+                "text_ko": "[TODO: LINE_KO]",
+            },
+        ],
+    },
 ]
 
 SFX_MANIFEST = [
@@ -138,6 +257,26 @@ SEGMENT_SFX = [
         "mode": "bed",
         "offset_s": 0.0,
         "path": "", # e.g. "assets/audio/sfx/intro.wav"
+        "volume_db": -4.9,
+        "license": "CC0",
+    },
+    {
+        "id": "montage_sfx",
+        "kind": "segment",
+        "segment_type": "montage",
+        "mode": "bed",
+        "offset_s": 0.0,
+        "path": "", # e.g. "assets/audio/sfx/montage.wav"
+        "volume_db": -4.9,
+        "license": "CC0",
+    },
+    {
+        "id": "outro_sfx",
+        "kind": "segment",
+        "segment_type": "outro",
+        "mode": "bed",
+        "offset_s": 0.0,
+        "path": "", # e.g. "assets/audio/sfx/outro.wav"
         "volume_db": -4.9,
         "license": "CC0",
     },
