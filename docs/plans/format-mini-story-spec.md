@@ -49,6 +49,21 @@ This document defines the specification for the "AV Diary" (`RENDER_TYPE = "diar
 | `volume_db` | `float` | Relative volume adjustments in decibels. |
 | `license` | `str` | License citation for the spot effect. |
 
+### Out-of-Scene Segment SFX (`SEGMENT_SFX`)
+
+`SEGMENT_SFX` registers structural audio beds or spots (Layer 3) that play outside the standard scene context (e.g. during the intro, montage, or outro).
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `str` | Unique segment sound effect identifier. |
+| `kind` | `str` | Must be `"segment"`. |
+| `segment_type` | `str` | Must be one of: `"intro"`, `"montage"`, `"outro"`. |
+| `mode` | `str` | Either `"bed"` (loops audio across the segment) or `"spot"` (one-shot effect). |
+| `offset_s` | `float` | Start delay offset relative to the segment start time. |
+| `path` | `str` | Path to the audio file relative to the repo root. |
+| `volume_db` | `float` | Relative volume adjustments in decibels. |
+| `license` | `str` | License citation for the segment effect. |
+
 ---
 
 ## Timing and Pacing
@@ -62,8 +77,8 @@ AUDIO = {
     # ...
     "processing_pause_s": 2.5,  # Cognitive silence duration after speech ends
     "min_hold_s": 2.5,          # Minimum screen duration for a diary line
-    "ambient_bed_db": -20.0,    # Default volume for Layer 1 ambient beds
-    "bgm_volume_db": -20.0,     # Default volume for BGM (Layer 1 bed takes priority)
+    "ambient_bed_db": -11.9,    # Default volume for Layer 1 ambient beds
+    "bgm_volume_db": 6.0,       # Default volume for BGM (usually scaled in gain)
 }
 ```
 
@@ -82,13 +97,22 @@ For each segment type, duration is resolved as:
 
 ---
 
-## Audio Architecture (2-Layer SFX)
+## Audio Architecture (3-Layer SFX & Mastering)
 
-1. **Layer 1: Ambient Bed (`ambient_sfx`)**:
-   - Looped using moviepy's `AudioLoop` over the entire span of the corresponding scene (from the scene's header start until the next scene's header start or end of video).
-2. **Layer 2: Spot Polies (`SFX_MANIFEST`)**:
-   - Anchored to a specific line (`line_index`) within a scene. Start time is dynamically adjusted to `line_start_s + offset_s`.
-   - Volumetric mixing with decibel conversions.
+### Mixing Pipeline
+The audio is compiled in two stages using ffmpeg and moviepy:
+1. **Stage 1 (`mix_sfx_layer`)**: Combines raw Narration, Scene-level Ambient beds (Layer 1), Spot effects (Layer 2), and Segment structural beds (Layer 3) into `output/audio/narration_sfx.wav`.
+2. **Stage 2 (`mix_with_bgm`)**: Mixes the composite SFX track with BGM, applying sidechain compression (ducking) and final mastering filters:
+   - `sidechaincompress`: Compresses BGM volume when narration is active.
+   - `amix=normalize=0`: Mixes BGM and SFX without automatic volume normalization.
+   - `alimiter=limit=0.9`: Prevents peak clipping (caps peak at ~-0.9 dBFS).
+   - `loudnorm=I=-14:TP=-1.5:LRA=11`: Normalizes the mix to target `-14 LUFS` and `-1.5 dBFS` peak.
+
+### Level Balancing Guidelines
+To prevent BGM from burying environmental details:
+- **Measure Pre-Loudnorm Levels**: Extract values from `output/audio/narration_sfx.wav` and the raw BGM to gauge absolute differences before the loudnorm auto-gain scaling kicks in.
+- **Ambience Priority**: Ensure scene ambience leads the piano/BGM by **+8 to +9 dB** during gaps.
+- **BGM Gain Offsets**: Note that very quiet BGM sources (e.g. `fur_elise` at ~-40 dB mean) require positive gain settings (e.g. `bgm_volume_db = 6.0`) to remain softly audible under the loudnorm compression.
 
 ---
 
@@ -96,8 +120,9 @@ For each segment type, duration is resolved as:
 
 1. **Background Layer**:
    - Standard Ken Burns zoom-in `z = 1.0 -> 1.08`.
-   - Art-directed pans require source image resolution of at least `1.25x` viewport width.
+   - Art-directed pans require source image resolution of at least `1.25x` viewport width (e.g. 1600x900 for a 1280x720 output).
    - Background crop and pan animations run continuously across continuous segments using the same background image (grouped "beats").
 2. **Caption Overlay**:
    - Rendered as a separate RGBA Layer overlaid statically.
    - Text wrapping and badges are composited without inheriting camera movement.
+   - The caption panel height is calculated dynamically based on wrapped line lengths and badge existence to prevent overlapping subtitles.

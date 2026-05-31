@@ -4,18 +4,18 @@ Companion to [format-mini-story-spec.md](format-mini-story-spec.md). Defines the
 quality bar and sourcing procedure for the **scene images** and **SFX/ambient
 audio** of the diary format, plus how to verify them with the gate.
 
-> **Why this exists** — the Ep.1 pilot shipped *placeholder* assets that passed
+> **Why this exists** — The Ep.1 pilot originally shipped *placeholder* assets that passed
 > path/extension checks but were not real: square low-res JPEGs mislabelled as
-> PNG, and 15 byte-identical silent audio stubs. `checks/validate_diary.py` now
-> catches all of these as warnings at `make check` time (see §4). This doc is
-> the spec for replacing them.
+> PNG, and 15 byte-identical silent audio stubs. `checks/validate_diary.py` Rule 9 now
+> blocks all of these as errors at `make check` time (see §4). This doc defines the spec
+> for sourcing and maintaining those assets.
 
-## 1. Measured current state (2026-05-30)
+## 1. Measured current state (2026-05-31)
 
 | Asset | Reality | Gate signal |
 |---|---|---|
-| `assets/story/*.png` (×8) | **1920×1080 PNG**, real scene art (regenerated 2026-05-30); caption panel still occludes lower-centre if props drift low | 0 warnings (format/resolution pass) |
-| `assets/audio/sfx/*.wav` (×15) | **One file copied 15×** (single md5), **−91 dBFS = silence** | 15× silent + 1× duplicate-content |
+| `assets/story/*.png` (×8) | **1920×1080 PNG**, real scene art; caption panel dynamically sizes, eliminating overlap risks | 0 errors / 0 warnings |
+| `assets/audio/sfx/*.wav` (×18) | **18 distinct, procedural CC0 files** generated via deterministic numpy DSP scripts. No silence, no duplicates. | 0 errors / 0 warnings |
 
 Crop/occlusion preview: `output/qa/diary-crop-qa.png` (red = 16:9 keep-band,
 dimmed = cut, blue = caption-panel occlusion zone).
@@ -29,10 +29,8 @@ so the source must out-resolve the viewport with headroom.
 - **Resolution: ≥ 1600×900 (hard floor = 1.25× the 1280×720 viewport).**
   Recommended **1920×1080**. Below 1600 wide → upscaled/soft and the gate warns.
 - **Format: real PNG** (or save `.jpg` if JPEG — just don't mislabel; the gate
-  now checks content vs extension).
-- **Caption safe area:** the subtitle panel covers the **bottom ~210 px (at
-  720p)** plus margin. Keep faces and any plot-critical prop in the **top ~65%**
-  of the frame. Nothing important in the bottom third.
+  checks content vs extension).
+- **Caption safe area:** the subtitle panel covers the bottom center, but its height is computed dynamically based on text length. To be safe, keep faces and any plot-critical prop in the **top ~65%** of the frame. Nothing important in the bottom third.
 - **Continuity:** Lucía (low bun, denim shirt) and Diego must stay consistent
   across scenes 4/6/7. The **blue notebook** is the recurring plot prop (scenes
   2, 3, 4, 6, 7, 8) — keep it recognisably blue and **above** the panel zone.
@@ -50,12 +48,11 @@ so the source must out-resolve the viewport with headroom.
 | 7 | Lluvia y churros | Two-shot Diego + Lucía, the blue notebook handed over, churros — busy lower area, frame tight and high |
 | 8 | El diario de la noche | Desk at night, lamp, Lucía writing in the diary |
 
-After regenerating: `PROJECT=historia_a1_un_dia_de_lucia make check` must show
-**0** image warnings.
+After regenerating: `PROJECT=historia_a1_un_dia_de_lucia make check` must show **0** errors/warnings.
 
 ## 3. SFX & ambient sourcing
 
-Two layers (see format spec §"Audio Architecture"):
+Three layers (see format spec §"Audio Architecture"):
 
 - **Layer 1 — ambient beds** (`STORY_SCENES[*].ambient_sfx`): looped over the
   whole scene via `AudioLoop`. **Must be ≥ ~10–20 s of real continuous room
@@ -63,40 +60,20 @@ Two layers (see format spec §"Audio Architecture"):
   machine-guns — do **not** ship short ambient beds.
 - **Layer 2 — spot SFX** (`SFX_MANIFEST[*]`): one-shots anchored to a line.
   Short (0.5–3 s) is fine.
+- **Layer 3 — segment SFX** (`SEGMENT_SFX[*]`): structural beds for non-scene blocks (intro, montage, outro).
 
-**Sources (CC0 / clearly-licensed):** freesound.org (filter *License: CC0*),
-Pixabay sound effects, Zapsplat (attribution). **Record the real license** in
-each `ambient_sfx_license` / `license` field — keep them accurate, not "CC0" by
-default.
+### Procedural Audio Sourcing
+For the base build, we utilize mathematical synthesis (`scripts/synthesize_diary_sfx.py`) to generate compliant CC0 wav clips.
+- **Ambient Beds (8 tracks)**: Madrid morning (low-pass + highs hiss), quiet morning (room tone), metro inside (squeal + joint clicks), soft typing (random keystrokes), classroom murmur (mid voice peaks), street traffic (Doppler pans), cafe rain (high rain noise), quiet night (AC hum).
+- **Spot SFX (7 tracks)**: Door close (low thud + footsteps), metro chime (3 notes), text send (ticks + whoosh), chair scrape (friction noise), thunder rain (noise transient), cafe bell (2 tones), night tone (440Hz + pencil scratch).
+- **Segment SFX (3 tracks)**: Intro morning (sunrise sweep + birds), montage shimmer (warm pads), outro calm (bell chords).
 
-| Slot | Scene/line | Needs to sound like | Search terms |
-|---|---|---|---|
-| ambient ×8 | per scene | morning home / quiet home / metro interior / quiet typing room / soft classroom / Madrid street / café with rain / quiet night room | "room tone", "metro interior", "café ambience", "city street ambience", "rain window" |
-| spot `door_close_footsteps` | s2 L6 | door shut + a few steps | "door close footsteps" |
-| spot `metro_chime` | s3 L1 | metro arrival chime | "metro door chime" |
-| spot `phone_typing_send` | s4 L1 | typing + send whoosh | "text message send" |
-| spot `chair_murmur` | s5 L6 | chair scrape + classroom murmur | "classroom murmur" |
-| spot `thunder_rain` | s7 L1 | distant thunder + rain onset | "thunder rain" |
-| spot `doorbell_cups` | s7 L5 | café door bell + cups | "café door bell cups" |
-| spot `night_tone_pen` | s8 L1 | quiet night + pen on paper | "pen writing paper" |
-
-**Levels:** keep the project's `ambient_bed_db` / spot `volume_db` but verify by
-ear with ducking on — ambient should sit clearly under narration, audible in
-gaps. Normalise sources before placing.
-
-**Verify each file is real:**
-```sh
-ffmpeg -i assets/audio/sfx/<file>.wav -af volumedetect -f null -   # mean/max must NOT be ~ -91 dB
-```
+For production-ready version 1.1+, replace these mathematical assets with real CC0 recordings (soured from freesound.org, Pixabay, etc.) to achieve maximum natural organic quality, while keeping their exact filenames and registering licenses in `assets/audio/LICENSE.md`.
 
 ## 4. Done = gate-clean, then linguist, then render
 
 1. `PROJECT=historia_a1_un_dia_de_lucia make check` → **no** image/audio
-   warnings (silent / duplicate / format-mismatch / low-res all gone).
-2. Linguist approves the es/ko lines (flip the STATUS header in the project
+   warnings or errors.
+2. Linguist approves the es/ko lines (flip the STATUS header to `"approved"` in the project
    module).
-3. `make render-diary` → `checks/probe_output.py` → `make publish-diary`.
-
-Rendering before step 1 produces soft, upscaled images with an inaudible SFX
-layer — technically "ok" to `probe_output.py` (BGM carries the level check) but
-not shippable.
+3. Run `make render-diary` → verification (`checks/probe_output.py`) → `python -m build.publish` to package the bundle.
