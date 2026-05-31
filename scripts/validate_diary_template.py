@@ -60,6 +60,10 @@ def main() -> int:
         for key in ["id", "kind", "scene_id", "line_index", "offset_s", "path", "volume_db", "license"]:
             assert key in sfx, f"SFX_MANIFEST item at index {idx} missing key: {key}"
         assert sfx["kind"] == "spot", f"SFX_MANIFEST item at index {idx} 'kind' must be 'spot', got {sfx['kind']}"
+        assert isinstance(sfx["scene_id"], int), f"SFX_MANIFEST item {idx} scene_id must be int, got {type(sfx['scene_id'])}"
+        assert isinstance(sfx["line_index"], int), f"SFX_MANIFEST item {idx} line_index must be int, got {type(sfx['line_index'])}"
+        assert isinstance(sfx["offset_s"], (int, float)) and sfx["offset_s"] >= 0.0, f"SFX_MANIFEST item {idx} offset_s must be a non-negative number, got {sfx['offset_s']}"
+        assert isinstance(sfx["volume_db"], (int, float)), f"SFX_MANIFEST item {idx} volume_db must be numeric, got {type(sfx['volume_db'])}"
 
     assert hasattr(tmpl, "SEGMENT_SFX") and isinstance(tmpl.SEGMENT_SFX, list), "SEGMENT_SFX must be a list"
     assert len(tmpl.SEGMENT_SFX) == 3, f"SEGMENT_SFX must contain exactly 3 items, got {len(tmpl.SEGMENT_SFX)}"
@@ -70,6 +74,10 @@ def main() -> int:
         for key in ["id", "kind", "segment_type", "mode", "offset_s", "path", "volume_db", "license"]:
             assert key in item, f"SEGMENT_SFX item at index {idx} missing key: {key}"
         assert item["kind"] == "segment", f"SEGMENT_SFX item at index {idx} 'kind' must be 'segment', got {item['kind']}"
+        assert item["segment_type"] in {"intro", "montage", "outro"}, f"SEGMENT_SFX item {idx} segment_type must be in {{intro, montage, outro}}, got {item['segment_type']}"
+        assert item["mode"] in {"bed", "spot"}, f"SEGMENT_SFX item {idx} mode must be 'bed' or 'spot', got {item['mode']}"
+        assert isinstance(item["offset_s"], (int, float)) and item["offset_s"] >= 0.0, f"SEGMENT_SFX item {idx} offset_s must be a non-negative number, got {item['offset_s']}"
+        assert isinstance(item["volume_db"], (int, float)), f"SEGMENT_SFX item {idx} volume_db must be numeric, got {type(item['volume_db'])}"
 
     # Assert SEGMENTS & DESIGN & AUDIO
     assert hasattr(tmpl, "SEGMENTS") and isinstance(tmpl.SEGMENTS, list), "SEGMENTS must be a list"

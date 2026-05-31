@@ -68,7 +68,7 @@ For the base build, we utilize mathematical synthesis (`scripts/synthesize_diary
 - **Spot SFX (7 tracks)**: Door close (low thud + footsteps), metro chime (3 notes), text send (ticks + whoosh), chair scrape (friction noise), thunder rain (noise transient), cafe bell (2 tones), night tone (440Hz + pencil scratch).
 - **Segment SFX (3 tracks)**: Intro morning (sunrise sweep + birds), montage shimmer (warm pads), outro calm (bell chords).
 
-For production-ready version 1.1+, replace these mathematical assets with real CC0 recordings (soured from freesound.org, Pixabay, etc.) to achieve maximum natural organic quality, while keeping their exact filenames and registering licenses in `assets/audio/LICENSE.md`.
+For production-ready version 1.1+, replace these mathematical assets with real CC0 recordings (sourced from freesound.org, Pixabay, etc.) to achieve maximum natural organic quality, while keeping their exact filenames and registering licenses in `assets/audio/LICENSE.md`.
 
 ## 4. Done = gate-clean, then linguist, then render
 
@@ -76,4 +76,4 @@ For production-ready version 1.1+, replace these mathematical assets with real C
    warnings or errors.
 2. Linguist approves the es/ko lines (flip the STATUS header to `"approved"` in the project
    module).
-3. Run `make render-diary` → verification (`checks/probe_output.py`) → `python -m build.publish` to package the bundle.
+3. Run `PROJECT=<module> make render-diary` → verification (`checks/probe_output.py`) → `PROJECT=<module> .venv/bin/python -m build.publish` to package the bundle.

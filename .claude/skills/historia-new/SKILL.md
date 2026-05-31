@@ -7,8 +7,12 @@ argument-hint: "<episode_id> <slug> <topic>"
 
 This skill defines the turnkey workflow for authoring a new long-form mini-story episode (`RENDER_TYPE = "diary"`) in the Spanish Lab repository.
 
+## Arguments
+
+`$ARGUMENTS`
+
 ## Execution Trigger
-To start a new episode, provide the episode ID, series slug, and topic:
+To start a new episode, provide the episode ID, series slug, and topic through `$ARGUMENTS`:
 ```bash
 # Example: Create ep02-lucia-finds-keys.py about Lucía finding her keys in Madrid
 ```
