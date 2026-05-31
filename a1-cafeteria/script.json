@@ -1,0 +1,29 @@
+{
+  "episode": 5,
+  "level": "A1",
+  "slug": "a1-cafeteria",
+  "title": "Un café, por favor ☕ 주문하고 계산하기 | Español A1 · Ep.5",
+  "learning_goal": "Pedir algo en una cafetería, preguntar el precio y pagar con una frase corta.",
+  "characters": ["Peter", "Lucía", "Diego"],
+  "scene": "Peter, Lucía y Diego entran en una cafetería pequeña. Peter practica cómo pedir y pagar de forma sencilla.",
+  "phrases": [
+    {"num": 1, "es": "¿Qué quieres?", "ko": "뭐 마실래? / 뭐 원해?", "example": "Lucía: Peter, ¿qué quieres?"},
+    {"num": 2, "es": "Quiero un té.", "ko": "차 한 잔 주세요.", "example": "Quiero un té, por favor."},
+    {"num": 3, "es": "Quiero un zumo de naranja.", "ko": "오렌지 주스 주세요.", "example": "Quiero un zumo de naranja."},
+    {"num": 4, "es": "Quiero una tostada.", "ko": "토스타다 하나 주세요.", "example": "Quiero una tostada, por favor."},
+    {"num": 5, "es": "¿Cuánto cuesta?", "ko": "얼마예요?", "example": "¿Cuánto cuesta el café?"},
+    {"num": 6, "es": "Cuesta tres euros.", "ko": "3유로예요.", "example": "El café cuesta tres euros."},
+    {"num": 7, "es": "La cuenta, por favor.", "ko": "계산서 주세요.", "example": "Camarero, la cuenta, por favor."},
+    {"num": 8, "es": "¿Con tarjeta o en efectivo?", "ko": "카드로, 현금으로?", "example": "¿Pagas con tarjeta o en efectivo?"},
+    {"num": 9, "es": "Con tarjeta.", "ko": "카드로요.", "example": "Pago con tarjeta."},
+    {"num": 10, "es": "Gracias, adiós.", "ko": "감사합니다, 안녕히 계세요.", "example": "Gracias, adiós. ¡Hasta luego!"}
+  ],
+  "dialogue": [
+    {"speaker": "Lucía", "es": "Peter, ¿qué quieres?", "ko": "Peter, 뭐 마실래?"},
+    {"speaker": "Peter", "es": "Quiero un té, por favor.", "ko": "차 한 잔 주세요."},
+    {"speaker": "Lucía", "es": "Yo quiero una tostada.", "ko": "나는 토스타다 하나 주세요."},
+    {"speaker": "Peter", "es": "¿Cuánto cuesta?", "ko": "얼마예요?"},
+    {"speaker": "Diego", "es": "Cuesta tres euros.", "ko": "3유로예요."},
+    {"speaker": "Peter", "es": "La cuenta, por favor. Con tarjeta.", "ko": "계산서 주세요. 카드로요."}
+  ]
+}

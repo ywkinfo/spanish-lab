@@ -1,0 +1,11 @@
+*.md text eol=lf
+*.py text eol=lf
+Makefile text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.mp3 binary
+*.wav binary
+*.mp4 binary

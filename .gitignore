@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+.DS_Store
+
+output/
+.claude/settings.local.json
+
+.env
+.env.*
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/

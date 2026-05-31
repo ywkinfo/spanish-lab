@@ -1,0 +1,40 @@
+---
+layout: default
+---
+
+<article class="lesson-page">
+  <header class="lesson-hero">
+    <div class="lesson-meta">
+      {% if page.level %}
+        <span class="level-badge">{{ page.level }}</span>
+      {% endif %}
+      {% if page.category %}
+        <span class="meta-tag">{{ page.category }}</span>
+      {% endif %}
+      {% if page.duration %}
+        <span class="meta-tag">⏱ {{ page.duration }}분</span>
+      {% endif %}
+    </div>
+    <h1 class="lesson-title">{{ page.title }}</h1>
+    {% if page.description %}
+      <p class="lesson-description">{{ page.description }}</p>
+    {% endif %}
+  </header>
+
+  <div class="lesson-content wrapper">
+    {{ content }}
+  </div>
+
+  {% if page.prev_lesson or page.next_lesson %}
+  <nav class="lesson-nav wrapper">
+    {% if page.prev_lesson %}
+      <a href="{{ page.prev_lesson.url }}">← {{ page.prev_lesson.title }}</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+    {% if page.next_lesson %}
+      <a href="{{ page.next_lesson.url }}">{{ page.next_lesson.title }} →</a>
+    {% endif %}
+  </nav>
+  {% endif %}
+</article>
