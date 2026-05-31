@@ -122,15 +122,24 @@ def main() -> int:
     # Check no trailing segments
     assert current_idx == len(segments), f"Unexpected extra segments at the end: {segments[current_idx:]}"
 
-    # Assert CHAPTERS references valid segment indexes
+    # Assert CHAPTERS references valid segment indexes and conforms to exact shape
     assert hasattr(tmpl, "CHAPTERS") and isinstance(tmpl.CHAPTERS, list), "CHAPTERS must be a list"
-    assert len(tmpl.CHAPTERS) > 0, "CHAPTERS must not be empty"
+    assert len(tmpl.CHAPTERS) == 10, f"CHAPTERS must have exactly 10 chapters (intro + 8 scenes + outro), got {len(tmpl.CHAPTERS)}"
+    
+    scene_headers = [i + 1 for i, seg in enumerate(segments) if seg.get("type") == "scene_header"]
+    assert len(scene_headers) == 8, f"Expected 8 scene headers in SEGMENTS, found {len(scene_headers)}"
+    
     for idx, chap in enumerate(tmpl.CHAPTERS):
         for key in ["segment", "title"]:
             assert key in chap, f"Chapter index {idx} missing key: {key}"
         seg_num = chap["segment"]
         assert isinstance(seg_num, int), f"Chapter segment index must be an integer, got {type(seg_num)}"
-        assert 1 <= seg_num <= len(segments), f"Chapter index {idx} references segment {seg_num}, which is out of valid range 1..{len(segments)}"
+        
+    assert tmpl.CHAPTERS[0]["segment"] == 1, f"First chapter must point to segment 1, got {tmpl.CHAPTERS[0]['segment']}"
+    for s_id in range(1, 9):
+        expected_seg = scene_headers[s_id - 1]
+        assert tmpl.CHAPTERS[s_id]["segment"] == expected_seg, f"Chapter {s_id} for scene {s_id} must point to segment {expected_seg}, got {tmpl.CHAPTERS[s_id]['segment']}"
+    assert tmpl.CHAPTERS[9]["segment"] == len(segments), f"Last chapter must point to final segment {len(segments)}, got {tmpl.CHAPTERS[9]['segment']}"
 
     assert hasattr(tmpl, "DESIGN") and isinstance(tmpl.DESIGN, dict), "DESIGN must be a dict"
     assert hasattr(tmpl, "AUDIO") and isinstance(tmpl.AUDIO, dict), "AUDIO must be a dict"

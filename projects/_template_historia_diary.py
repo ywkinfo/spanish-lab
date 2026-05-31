@@ -362,7 +362,7 @@ def _find_chapter_segment(scene_id: int) -> int:
     for idx, seg in enumerate(SEGMENTS):
         if seg.get("type") == "scene_header" and seg.get("scene_id") == scene_id:
             return idx + 1
-    return 2
+    raise ValueError(f"missing scene_header for scene_id={scene_id}")
 
 CHAPTERS = [
     {"segment": 1, "title": "Introducción"},

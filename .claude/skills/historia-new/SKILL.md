@@ -21,6 +21,8 @@ To start a new episode, provide the episode ID, series slug, and topic through `
 
 ### 1. Initialize from Template
 - Copy `projects/_template_historia_diary.py` to `projects/<series_slug>_ep<num>_<topic_slug>.py`.
+  - **Module Name Constraint**: The file name under `projects/` must use underscore-only separation (`_`). Using hyphens (`-`) will break Python imports. For example, use `projects/historia_a1_ep02_lucia_keys.py`.
+  - **Public Slug Constraint**: `PUBLIC_SLUG` and `OUTPUT_NAME` should be hyphenated (e.g. `historia-a1-ep02-lucia-keys`).
 - Fill in metadata fields: `OUTPUT_NAME`, `PUBLIC_SLUG`, `YOUTUBE_TITLE`, `DESCRIPTION_INTRO`, etc.
 - Set `STATUS = "draft"` in the module docstring. Keep `RENDER_TYPE = "diary"`.
 

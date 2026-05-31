@@ -76,4 +76,4 @@ For production-ready version 1.1+, replace these mathematical assets with real C
    warnings or errors.
 2. Linguist approves the es/ko lines (flip the STATUS header to `"approved"` in the project
    module).
-3. Run `PROJECT=<module> make render-diary` → verification (`checks/probe_output.py`) → `PROJECT=<module> .venv/bin/python -m build.publish` to package the bundle.
+3. Run `PROJECT=<module> make render-diary` → verification (`PROJECT=<module> make verify`) → `PROJECT=<module> .venv/bin/python -m build.publish` to package the bundle.
