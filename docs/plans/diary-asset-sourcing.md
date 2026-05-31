@@ -72,7 +72,7 @@ For production-ready version 1.1+, replace these mathematical assets with real C
 
 ## 4. Done = gate-clean, then linguist, then render
 
-1. `PROJECT=historia_a1_un_dia_de_lucia make check` → **no** image/audio
+1. `PROJECT=<module> make check` → **no** image/audio
    warnings or errors.
 2. Linguist approves the es/ko lines (flip the STATUS header to `"approved"` in the project
    module).
