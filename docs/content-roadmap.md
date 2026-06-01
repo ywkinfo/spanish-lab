@@ -29,6 +29,12 @@
 
 <!-- BEGIN:generated -->
 
+### [TODO: SERIES]
+
+| Ep | module | slug | 레벨 | 학습 포인트 (YOUTUBE_TITLE) | URL 상태 |
+|---:|---|---|---|---|---|
+| 1 | `_template_historia_diary` | `[TODO: PUBLIC_SLUG]` | [TODO: LEVEL] | [TODO: YOUTUBE_TITLE] | URL 미기록 |
+
 ### descripcion
 
 | Ep | module | slug | 레벨 | 학습 포인트 (YOUTUBE_TITLE) | URL 상태 |
@@ -88,8 +94,16 @@
 | 34 | `en_el_restaurante_pedir_a2` | `a2-en-el-restaurante-pedir` | A2 입문 | ¿Qué nos recomienda? 🍽️ 어떤 걸 추천해요? \| Español A2 · Ep.34 | URL 미기록 |
 | 35 | `en_el_restaurante_pagar_a2` | `a2-en-el-restaurante-pagar` | A2 입문 | Invito yo 💳 내가 낼게 \| Español A2 · Ep.35 | URL 미기록 |
 | 36 | `en_el_medico_sintomas_a2` | `a2-en-el-medico-sintomas` | A2 입문 | Me duele la cabeza 🤕 머리가 아파요 \| Español A2 · Ep.36 | URL 미기록 |
+| 37 | `llamada_gripe_rechazo_a2` | `a2-llamada-gripe-rechazo` | A2 입문 | No puedo ir porque estoy enfermo 📞 전화로 약속 거절하기 \| Español A2 · Ep.37 | URL 미기록 |
 
-> 요약: descripcion: 6모듈(최대 Ep.6) · frases-a1: 32모듈(최대 Ep.31) · frases-a2: 7모듈(최대 Ep.36) — 학습 채널 타임라인(frases-*) 최대 Ep.36 → **다음 = Ep.37**. 주의: frases-a1 모듈 수 ≠ 도달 Ep번호 (Ep.0×2 · Ep.2 remake 포함, Ep.24/25는 frases-a2, descripcion은 독립 번호 Ep.1–6).
+### historia-a1
+
+| Ep | module | slug | 레벨 | 학습 포인트 (YOUTUBE_TITLE) | URL 상태 |
+|---:|---|---|---|---|---|
+| 1 | `historia_a1_un_dia_de_lucia` | `historia-a1-un-dia-de-lucia` | A1 | Un día de Lucía en Madrid 🌞 하루 일과 따라가기 \| Español A1 · Historia Ep.1 | URL 미기록 |
+| 2 | `historia_a1_ep02_llaves_cafe` | `historia-a1-ep02-llaves-cafe` | A1 | Las llaves en el café 🔑 카페에 두고 온 열쇠 \| Español A1 · Historia Ep.2 | URL 미기록 |
+
+> 요약: [TODO: SERIES]: 1모듈(최대 Ep.1) · descripcion: 6모듈(최대 Ep.6) · frases-a1: 32모듈(최대 Ep.31) · frases-a2: 8모듈(최대 Ep.37) · historia-a1: 2모듈(최대 Ep.2) — 학습 채널 타임라인(frases-*) 최대 Ep.37 → **다음 = Ep.38**. 주의: frases-a1 모듈 수 ≠ 도달 Ep번호 (Ep.0×2 · Ep.2 remake 포함, Ep.24/25는 frases-a2, descripcion은 독립 번호 Ep.1–6).
 
 <!-- END:generated -->
 
@@ -119,6 +133,7 @@
 | 레스토랑 주문 (A2) | Ep.34 | ¿Qué nos recomienda? |
 | 식당 계산 · 더치페이 (A2) | Ep.35 | Invito yo / ¿Pagamos a medias? |
 | 병원 · 진료/증상 (A2) | Ep.36 | Me duele la cabeza / Tengo fiebre / Tengo tos |
+| 전화 약속 거절 (A2) | Ep.37 | No puedo ir / Tengo gripe / Que te mejores pronto |
 
 **아직 안 다룬 상황(분야) 예:** 호텔 체크인, 옷 사이즈/피팅, 길 안내(받기/주기), 전화 응대 등 → **C 큐**로.
 
@@ -131,7 +146,7 @@
 
 | 우선 | slug | 시리즈/레벨 | 상황(장면) · 단일 기능 목표 | 중복 아님 근거 |
 |---|---|---|---|---|
-| **권장 (Ep.37)** | `a2-en-el-hotel-checkin` | frases-a2 / A2 | 호텔 **체크인 · 예약 확인** | 미커버 |
+| **권장 (Ep.38)** | `a2-en-el-hotel-checkin` | frases-a2 / A2 | 호텔 **체크인 · 예약 확인** | 미커버 |
 | 대안 | `a2-comprar-ropa-talla` | frases-a2 / A2 | 옷 가게 **사이즈 · 입어보기**(`¿Tiene una talla…?`) | Ep.29(me-lo-llevo)는 구매결정만 → 사이즈/피팅 미커버 |
 
 **제외(이미 제작/중복):** `cuanto-cuesta-question`(=Ep.6·8), `quiero-para-llevar`(=Ep.28),
