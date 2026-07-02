@@ -5,7 +5,7 @@ pilgrim's credential by post. Grammar focus: querer/me gustaría + infinitivo.
 31 spoken lines, ~5 min finished length.
 
 RENDER_TYPE = "diary"  (multi-scene stills + Ken Burns + per-speaker TTS)
-STATUS: draft — awaiting 8 scene images in assets/images/camino_a2_ep01_la_idea/
+STATUS: uploaded as a private scheduled YouTube video on 2026-07-02.
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ IMAGE_PATH = ""
 DESCRIP_PATH = "camino-a2-ep01-la-idea/descrip.md"
 OUTPUT_NAME = "la-idea"
 PUBLIC_SLUG = "camino-a2-ep01-la-idea"
-YOUTUBE_URL = ""
+YOUTUBE_URL = "https://youtu.be/55HQapqptxc"
 SERIES = "camino-a2"
 SERIES_TITLE = "Español en el Camino"
 EPISODE = 1
@@ -23,10 +23,7 @@ LANGUAGE = "es"
 RENDER_VERSION = 2
 RENDER_TYPE = "diary"
 THUMBNAIL_PATH = "thumbs/camino-a2-ep01-la-idea-draft.jpg"
-YOUTUBE_TITLE = (
-    "La idea — Ep.01 | Español en el Camino "
-    "🐚 순례길을 걷고 싶어 | querer + infinitivo · A2+"
-)
+YOUTUBE_TITLE = "[스페인어 듣기 A2+] 순례길을 걷고 싶어 | La idea Camino Ep.01"
 DESCRIPTION_INTRO = (
     "Tres amigos reciben la credencial del peregrino por correo y tienen que decidir, "
     "de verdad, si quieren hacer el Camino de Santiago. Lucía, Diego y Jin expresan "

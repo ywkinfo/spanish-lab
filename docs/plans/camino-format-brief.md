@@ -196,7 +196,8 @@ diario ep51 led to these binding decisions:
 - **Caption fit:** Jin's grammar recap line was split into two segments at the sentence boundary
   (identical approved words) so every caption stays ≤2 lines at 82px.
 - **scene_02 art:** blurred-chalkboard artifact inpainted locally (Pillow; wall interpolation +
-  clean warm-slate board, x≈428–682/y≈0–224); original backed up outside the repo.
+  clean warm-slate board, x≈428–682/y≈0–224); original preserved untracked at
+  `.scratch/scene_02_three_backs.orig.png`.
 - **Thumbnail:** dedicated house-style draft `thumbs/camino-a2-ep01-la-idea-draft.jpg`
   (scripts/create_camino_ep01_thumbnail.py) wired via `THUMBNAIL_PATH`; the auto intro-frame
   fallback is not acceptable for this series (no Korean teaser).
@@ -213,3 +214,10 @@ diario ep51 led to these binding decisions:
   `assets/audio/spanish-lab-brand-bgm.mp3` with ducking and `bgm_volume_db = -4.0`; the previous
   `fur_elise_inspired_soft_piano.wav` bed is not used for Camino.
 - **Publish version:** v1 remains as audit history; the corrected upload candidate is v2.
+- **YouTube title format (series convention, follows the diario listening pattern):**
+  `[스페인어 듣기 A2+] {한국어 훅} | {Spanish episode title} Camino Ep.NN` — Ep01:
+  `[스페인어 듣기 A2+] 순례길을 걷고 싶어 | La idea Camino Ep.01` (module `YOUTUBE_TITLE` +
+  both v2 meta JSONs updated in place; video/description unchanged).
+- **Upload record:** Ep01 v2 was uploaded as a private scheduled YouTube video on 2026-07-02:
+  `https://youtu.be/55HQapqptxc`. Module `YOUTUBE_URL` is the canonical repo field for
+  downstream exports.
