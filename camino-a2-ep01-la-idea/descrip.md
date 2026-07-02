@@ -10,8 +10,8 @@
 10 | Quiero empezar algo nuevo. Necesito tiempo para pensar. | 새로운 걸 시작하고 싶어. 생각할 시간이 필요해. |
 11 | ¿De verdad quieres hacerlo? | 정말 하고 싶어? |
 12 | Sí, de verdad. No quiero esperar más. | 응, 정말로. 더는 미루고 싶지 않아. |
-13 | Soy español y nunca he hecho el Camino. Yo también quiero hacerlo. | 나 스페인 사람인데 순례길을 한 번도 안 해 봤어. 나도 하고 싶어. |
-14 | Quiero ver mi país a pie, despacio. | 내 나라를 두 발로, 천천히 보고 싶어. |
+13 | Soy mexicano y nunca he hecho el Camino. Yo también quiero hacerlo. | 나 멕시코 사람인데 순례길을 한 번도 안 해 봤어. 나도 하고 싶어. |
+14 | Quiero ver España a pie, despacio. | 스페인을 두 발로, 천천히 보고 싶어. |
 15 | ¿Y el dinero? ¿Y los días libres? | 돈은? 그리고 휴가는? |
 16 | Con poco dinero se puede. Los albergues son baratos. | 적은 돈으로도 돼. 알베르게는 싸거든. |
 17 | Entonces… me gustaría hacer el Camino con vosotros. | 그럼… 나도 너희랑 순례길을 걷고 싶어. |
@@ -26,6 +26,7 @@
 26 | Queremos hacer el Camino juntos. | 우리는 함께 순례길을 걷고 싶어. |
 27 | Hay una frase para esto. Se dice "Buen Camino". | 이럴 때 쓰는 말이 있어. "부엔 카미노"라고 해. |
 28 | Esa noche, Jin escribe en su cuaderno. | 그날 밤, 진은 공책에 씁니다. |
-29 | La frase del día es "Quiero hacer el Camino". | 오늘의 문장 "나는 순례길을 걷고 싶어". |
-30 | Con "querer" más infinitivo, digo lo que deseo. También, "Me gustaría hacerlo". | "querer + 동사원형"으로 바라는 걸 말한다. "Me gustaría hacerlo"라고도 한다. |
-31 | Palabras nuevas: la credencial, el peregrino, la vieira. ¡Buen Camino! | 새 단어: 크레덴시알, 순례자, 가리비. 부엔 카미노! |
+29 | La frase del día es "Quiero hacer el Camino". | 오늘의 문장: "나는 순례길을 걷고 싶어". |
+30 | Con "querer" más infinitivo, digo lo que deseo. | "querer + 동사원형"으로 바라는 걸 말한다. |
+31 | También, "Me gustaría hacerlo". | "Me gustaría hacerlo"라고도 한다. |
+32 | Palabras nuevas: la credencial, el peregrino, la vieira. ¡Buen Camino! | 새 단어: 크레덴시알, 순례자, 가리비. 부엔 카미노! |

@@ -119,6 +119,72 @@ def _check_image_file(prefix: str, suffix: str, full_path: Path, warnings: list[
         )
 
 
+def _resolve_project_path(path: str) -> Path:
+    candidate = Path(path)
+    if candidate.is_absolute():
+        return candidate
+    return ROOT / candidate
+
+
+def _parse_descrip_rows(descrip_path: str) -> tuple[list[tuple[int, str, str]], list[str]]:
+    """Parse numbered diary descrip rows as ``number | text_es | text_ko |``."""
+    errors: list[str] = []
+    rows: list[tuple[int, str, str]] = []
+    if not descrip_path:
+        return rows, ["descrip_path is empty"]
+
+    full_path = _resolve_project_path(descrip_path)
+    if not full_path.exists():
+        return rows, [f"descrip not found: {descrip_path}"]
+
+    for line_no, raw_line in enumerate(full_path.read_text(encoding="utf-8").splitlines(), start=1):
+        line = raw_line.strip()
+        if not line:
+            continue
+        parts = [part.strip() for part in line.split("|")]
+        if len(parts) < 3:
+            errors.append(f"descrip line {line_no}: expected at least 3 pipe columns, got {len(parts)}")
+            continue
+        try:
+            number = int(parts[0])
+        except ValueError:
+            errors.append(f"descrip line {line_no}: row number must be numeric: {parts[0]!r}")
+            continue
+        rows.append((number, parts[1], parts[2]))
+    return rows, errors
+
+
+def _expected_descrip_rows(story_scenes: list[dict]) -> list[tuple[int, str, str]]:
+    rows: list[tuple[int, str, str]] = []
+    for scene in story_scenes:
+        for line in scene.get("lines", []):
+            rows.append((len(rows) + 1, str(line.get("text_es", "")).strip(), str(line.get("text_ko", "")).strip()))
+    return rows
+
+
+def _validate_descrip_matches_story(story_scenes: list[dict], descrip_path: str, errors: list[str]) -> None:
+    expected_rows = _expected_descrip_rows(story_scenes)
+    actual_rows, parse_errors = _parse_descrip_rows(descrip_path)
+    errors.extend(parse_errors)
+    if parse_errors:
+        return
+
+    if len(actual_rows) != len(expected_rows):
+        errors.append(
+            f"descrip row count differs from story lines: expected {len(expected_rows)}, got {len(actual_rows)}"
+        )
+
+    for expected, actual in zip(expected_rows, actual_rows):
+        expected_number, expected_es, expected_ko = expected
+        actual_number, actual_es, actual_ko = actual
+        if actual_number != expected_number:
+            errors.append(f"descrip row #{actual_number}: expected row number {expected_number}")
+        if actual_es != expected_es:
+            errors.append(f"descrip row #{expected_number}: text_es differs from STORY_SCENES")
+        if actual_ko != expected_ko:
+            errors.append(f"descrip row #{expected_number}: text_ko differs from STORY_SCENES")
+
+
 def validate(
     story_scenes: list[dict],
     sfx_manifest: list[dict] | None,
@@ -297,6 +363,9 @@ def validate(
             )
 
         total_duration += scene_duration
+
+    # -- Rule 7b: descrip.md must mirror STORY_SCENES -------------------------
+    _validate_descrip_matches_story(story_scenes, descrip_path, errors)
 
     # -- Rule 8: SFX manifest validation --------------------------------------
     total_sfx = 0

@@ -30,6 +30,7 @@ from build.publish import (  # noqa: E402
 from build.audio import assert_tts_fits_timeline, build_tts_command, mix_sfx_layer  # noqa: E402
 from build.segment_adapter import (  # noqa: E402
     RENDER_TYPE_CARDS,
+    RENDER_TYPE_DIARY,
     RENDER_TYPE_KENBURNS,
     description_text,
     display_text,
@@ -201,6 +202,18 @@ class SegmentAdapterTests(unittest.TestCase):
     def test_card_display_text(self) -> None:
         segment = {"type": "phrase", "frase_num": 1, "text_es": "Hola.", "text_ko": "안녕하세요."}
         self.assertEqual(display_text(segment, RENDER_TYPE_CARDS), "#01 Hola. / 안녕하세요.")
+
+
+class DebugDispatchTests(unittest.TestCase):
+    def test_diary_debug_dispatch_uses_diary_safe_script(self) -> None:
+        from checks.make_debug import scripts_for_render_type
+
+        self.assertEqual(scripts_for_render_type(RENDER_TYPE_DIARY), ["checks/make_diary_debug.py"])
+
+    def test_kenburns_debug_dispatch_keeps_source_image_tools(self) -> None:
+        from checks.make_debug import scripts_for_render_type
+
+        self.assertIn("checks/make_overlay.py", scripts_for_render_type(RENDER_TYPE_KENBURNS))
 
 
 class AudioSynthesisTests(unittest.TestCase):
@@ -484,6 +497,16 @@ class MetadataValidatorTests(unittest.TestCase):
 
 
 class DiaryValidatorTests(unittest.TestCase):
+    def matching_descrip_path(self, story_scenes: list[dict]) -> str:
+        path = Path(tempfile.NamedTemporaryFile(delete=False, suffix=".md").name)
+        rows = []
+        for scene in story_scenes:
+            for line in scene.get("lines", []):
+                rows.append(f"{len(rows) + 1} | {line.get('text_es', '')} | {line.get('text_ko', '')} |")
+        path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+        self.addCleanup(path.unlink, missing_ok=True)
+        return str(path)
+
     def test_valid_diary_data_passes(self) -> None:
         from checks.validate_diary import validate as validate_diary
         story_scenes = [
@@ -499,10 +522,37 @@ class DiaryValidatorTests(unittest.TestCase):
                 ]
             }
         ]
-        errors, warnings, summary = validate_diary(story_scenes, None, {}, "descrip.md")
+        errors, warnings, summary = validate_diary(story_scenes, None, {}, self.matching_descrip_path(story_scenes))
         self.assertEqual(errors, [])
         self.assertEqual(warnings, ["scene #1: image_path is empty"])
         self.assertEqual(summary["scenes"], 1)
+
+    def test_descrip_text_mismatch_fails(self) -> None:
+        from checks.validate_diary import validate as validate_diary
+        story_scenes = [
+            {
+                "scene_id": 1,
+                "title_es": "Escena 1",
+                "title_ko": "Scene 1",
+                "lines": [
+                    {
+                        "kind": "dialogue",
+                        "speaker": "Diego",
+                        "text_es": "Soy mexicano.",
+                        "text_ko": "I am Mexican.",
+                    }
+                ],
+            }
+        ]
+        path = Path(tempfile.NamedTemporaryFile(delete=False, suffix=".md").name)
+        self.addCleanup(path.unlink, missing_ok=True)
+        path.write_text("1 | Soy español. | I am Spanish. |\n", encoding="utf-8")
+
+        errors, warnings, summary = validate_diary(story_scenes, None, {}, str(path))
+
+        del warnings, summary
+        self.assertIn("descrip row #1: text_es differs from STORY_SCENES", errors)
+        self.assertIn("descrip row #1: text_ko differs from STORY_SCENES", errors)
 
     def test_duplicate_scene_id_fails(self) -> None:
         from checks.validate_diary import validate as validate_diary
@@ -520,7 +570,7 @@ class DiaryValidatorTests(unittest.TestCase):
                 "lines": [{"kind": "narration", "speaker": "", "text_es": "C", "text_ko": "D", "duration_s": 50.0}]
             }
         ]
-        errors, warnings, summary = validate_diary(story_scenes, None, {}, "descrip.md")
+        errors, warnings, summary = validate_diary(story_scenes, None, {}, self.matching_descrip_path(story_scenes))
         self.assertIn("duplicate scene_id 1", errors)
 
     def test_invalid_line_duration_fails(self) -> None:
@@ -533,7 +583,7 @@ class DiaryValidatorTests(unittest.TestCase):
                 "lines": [{"kind": "narration", "speaker": "", "text_es": "A", "text_ko": "B", "duration_s": -1.0}]
             }
         ]
-        errors, warnings, summary = validate_diary(story_scenes, None, {}, "descrip.md")
+        errors, warnings, summary = validate_diary(story_scenes, None, {}, self.matching_descrip_path(story_scenes))
         self.assertTrue(any("duration_s must be a positive number" in err for err in errors))
 
     def test_ambient_sfx_requires_license(self) -> None:
@@ -547,7 +597,7 @@ class DiaryValidatorTests(unittest.TestCase):
                 "lines": [{"kind": "narration", "speaker": "", "text_es": "A", "text_ko": "B"}]
             }
         ]
-        errors, warnings, summary = validate_diary(story_scenes, None, {}, "descrip.md")
+        errors, warnings, summary = validate_diary(story_scenes, None, {}, self.matching_descrip_path(story_scenes))
         self.assertTrue(any("ambient_sfx_license must be a non-empty string" in err for err in errors))
 
     def test_spot_sfx_checks_bounds(self) -> None:
@@ -572,7 +622,9 @@ class DiaryValidatorTests(unittest.TestCase):
                 "license": "CC0"
             }
         ]
-        errors, warnings, summary = validate_diary(story_scenes, sfx_manifest, {}, "descrip.md")
+        errors, warnings, summary = validate_diary(
+            story_scenes, sfx_manifest, {}, self.matching_descrip_path(story_scenes)
+        )
         self.assertTrue(any("line_index 5 is out of bounds" in err for err in errors))
 
     def test_low_resolution_image_warns(self) -> None:
@@ -589,7 +641,9 @@ class DiaryValidatorTests(unittest.TestCase):
                     "lines": [{"kind": "narration", "speaker": "", "text_es": "A", "text_ko": "B", "duration_s": 40.0}],
                 }
             ]
-            errors, warnings, summary = validate_diary(story_scenes, None, {}, "descrip.md")
+            errors, warnings, summary = validate_diary(
+                story_scenes, None, {}, self.matching_descrip_path(story_scenes)
+            )
             self.assertEqual(errors, [])
             self.assertTrue(any("below the recommended minimum of 1600x900" in w for w in warnings))
 
@@ -607,7 +661,9 @@ class DiaryValidatorTests(unittest.TestCase):
                     "lines": [{"kind": "narration", "speaker": "", "text_es": "A", "text_ko": "B", "duration_s": 40.0}],
                 }
             ]
-            errors, warnings, summary = validate_diary(story_scenes, None, {}, "descrip.md")
+            errors, warnings, summary = validate_diary(
+                story_scenes, None, {}, self.matching_descrip_path(story_scenes)
+            )
             self.assertEqual(errors, [])
             self.assertTrue(any("but has a .png extension" in w for w in warnings))
 
@@ -630,7 +686,9 @@ class DiaryValidatorTests(unittest.TestCase):
                     "lines": [{"kind": "narration", "speaker": "", "text_es": "A", "text_ko": "B", "duration_s": 40.0}],
                 }
             ]
-            errors, warnings, summary = validate_diary(story_scenes, None, {}, "descrip.md")
+            errors, warnings, summary = validate_diary(
+                story_scenes, None, {}, self.matching_descrip_path(story_scenes)
+            )
             other_errors = [e for e in errors if "effectively silent" not in e]
             self.assertEqual(other_errors, [])
             self.assertTrue(any("effectively silent" in e for e in errors))
@@ -662,7 +720,9 @@ class DiaryValidatorTests(unittest.TestCase):
                     "lines": [{"kind": "narration", "speaker": "", "text_es": "C", "text_ko": "D", "duration_s": 40.0}],
                 },
             ]
-            errors, warnings, summary = validate_diary(story_scenes, None, {}, "descrip.md")
+            errors, warnings, summary = validate_diary(
+                story_scenes, None, {}, self.matching_descrip_path(story_scenes)
+            )
             other_errors = [e for e in errors if "identical audio content shared" not in e]
             self.assertEqual(other_errors, [])
             self.assertTrue(any("identical audio content shared by 2 entries" in e for e in errors))

@@ -284,7 +284,7 @@ Neither instance competes with the `querer` focus. Present perfect does not prol
 
 Rationale: Diego is canonically Mexican, so `es-MX-JorgeNeural` belongs to Diego. Jin remains the Korean-learner proxy whose Spanish is accurate and dialect-neutral; `es-US-AlonsoNeural` keeps him audibly distinct from Diego without adding Mexico-specific language to Jin's lines.
 
-**Standing caveat for all future episodes:** Diego may explain Camino/Peninsular-compatible vocabulary, but he must not claim Spanish origin or say Spain is `mi país`. Avoid Mexico-specific slang in Diego's lines unless the showrunner approves it for a specific beat. Jin's lines must remain dialect-neutral and pan-Hispanic/Peninsular-compatible.
+**Standing caveat for all future episodes:** Diego may explain Camino/Peninsular-compatible vocabulary, but he must not claim Spanish origin or frame Spain as his home country. Avoid Mexico-specific slang in Diego's lines unless the showrunner approves it for a specific beat. Jin's lines must remain dialect-neutral and pan-Hispanic/Peninsular-compatible.
 
 ### Note for the producer
 
