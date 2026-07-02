@@ -408,7 +408,11 @@ def build_metadata(
 def publish(skip_render_check: bool = False) -> dict[str, Any]:
     source_video = OUTPUT_DIR / f"{OUTPUT_NAME}.mp4"
     if not source_video.exists():
-        raise PublishError(f"rendered video not found: {rel(source_video)}")
+        preview_video = OUTPUT_DIR / "preview.mp4"
+        if preview_video.exists():
+            source_video = preview_video
+        else:
+            raise PublishError(f"rendered video not found: {rel(source_video)} or {rel(preview_video)}")
 
     PUBLISH_DIR.mkdir(parents=True, exist_ok=True)
     META_DIR.mkdir(parents=True, exist_ok=True)
