@@ -40,10 +40,16 @@ render: check
 render-cards: check
 	$(PYTHON) -m build.render_cards --final
 
-publish: render
+publish:
+	@if [ ! -f output/$(OUTPUT_NAME).mp4 ] && [ ! -f output/preview.mp4 ]; then \
+		$(MAKE) render; \
+	fi
 	$(PYTHON) -m build.publish
 
-publish-cards: render-cards
+publish-cards:
+	@if [ ! -f output/$(OUTPUT_NAME).mp4 ] && [ ! -f output/preview.mp4 ]; then \
+		$(MAKE) render-cards; \
+	fi
 	$(PYTHON) -m build.publish
 
 preview-diary: check
@@ -52,7 +58,10 @@ preview-diary: check
 render-diary: check
 	$(PYTHON) -m build.render_diary --final
 
-publish-diary: render-diary
+publish-diary:
+	@if [ ! -f output/$(OUTPUT_NAME).mp4 ] && [ ! -f output/preview.mp4 ]; then \
+		$(MAKE) render-diary; \
+	fi
 	$(PYTHON) -m build.publish
 
 publish-existing:

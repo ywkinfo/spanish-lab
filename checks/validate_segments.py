@@ -153,14 +153,17 @@ def validate() -> tuple[list[str], list[str], dict]:
 def validate_metadata() -> list[str]:
     errors: list[str] = []
 
-    if SERIES != "historia-a1":
+    # Series subject to full metadata validation. Diary-format series built on the
+    # historia-a1 rules (same required fields, MINI_QUIZ, slug/DESCRIP_PATH matching)
+    # opt in here so they cannot silently bypass validate_metadata().
+    if SERIES not in ("historia-a1", "diario-a2", "camino-a2"):
         return errors
 
     # Check RENDER_TYPE and LANGUAGE
     if RENDER_TYPE not in ("cards", "diary"):
-        errors.append(f"historia-a1 validation: RENDER_TYPE must be 'cards' or 'diary', got {RENDER_TYPE!r}")
+        errors.append(f"{SERIES} validation: RENDER_TYPE must be 'cards' or 'diary', got {RENDER_TYPE!r}")
     if LANGUAGE != "es":
-        errors.append(f"historia-a1 validation: LANGUAGE must be 'es', got {LANGUAGE!r}")
+        errors.append(f"{SERIES} validation: LANGUAGE must be 'es', got {LANGUAGE!r}")
 
     # Required string fields
     required_strings = {
@@ -174,7 +177,7 @@ def validate_metadata() -> list[str]:
     }
     for field_name, field_val in required_strings.items():
         if not field_val or not isinstance(field_val, str) or not field_val.strip():
-            errors.append(f"historia-a1 validation: missing or empty required string field {field_name!r}")
+            errors.append(f"{SERIES} validation: missing or empty required string field {field_name!r}")
 
     # Required numeric fields
     required_numbers = {
@@ -183,7 +186,7 @@ def validate_metadata() -> list[str]:
     }
     for field_name, field_val in required_numbers.items():
         if field_val is None or isinstance(field_val, bool) or not isinstance(field_val, (int, float)):
-            errors.append(f"historia-a1 validation: missing or invalid numeric field {field_name!r}")
+            errors.append(f"{SERIES} validation: missing or invalid numeric field {field_name!r}")
 
     # Required structures (list/dict/tuple)
     required_structures = {
@@ -202,7 +205,7 @@ def validate_metadata() -> list[str]:
 
     for field_name, field_val in required_structures.items():
         if field_val is None or not isinstance(field_val, (list, tuple, dict)):
-            errors.append(f"historia-a1 validation: missing or invalid structure field {field_name!r}")
+            errors.append(f"{SERIES} validation: missing or invalid structure field {field_name!r}")
 
     # PUBLIC_SLUG directory matching DESCRIP_PATH folder
     if DESCRIP_PATH and PUBLIC_SLUG:
@@ -212,14 +215,14 @@ def validate_metadata() -> list[str]:
             folder_name = ""
         if folder_name != PUBLIC_SLUG:
             errors.append(
-                f"historia-a1 validation: PUBLIC_SLUG {PUBLIC_SLUG!r} must match DESCRIP_PATH directory {folder_name!r}"
+                f"{SERIES} validation: PUBLIC_SLUG {PUBLIC_SLUG!r} must match DESCRIP_PATH directory {folder_name!r}"
             )
 
     # MINI_QUIZ count must be exactly 5
     if MINI_QUIZ is not None:
         if not isinstance(MINI_QUIZ, (list, tuple)) or len(MINI_QUIZ) != 5:
             errors.append(
-                f"historia-a1 validation: MINI_QUIZ must have exactly 5 questions, "
+                f"{SERIES} validation: MINI_QUIZ must have exactly 5 questions, "
                 f"got {len(MINI_QUIZ) if isinstance(MINI_QUIZ, (list, tuple)) else type(MINI_QUIZ).__name__}"
             )
 

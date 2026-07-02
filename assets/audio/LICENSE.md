@@ -13,6 +13,18 @@ Record any optional BGM used by the render pipeline here.
 - Attribution text, if required: None
 - Used in: output/mercado.mp4 and output/reunion-madrid.mp4 as low-volume background music
 
+## assets/audio/spanish-lab-brand-bgm.mp3
+
+- Source URL: N/A, generated locally for this project
+- Download date: N/A
+- Creation date: 2026-06-30
+- Track title: Spanish Lab Brand BGM
+- Author: OpenAI Codex session for this project
+- License: Project-owned original procedural audio; no third-party samples
+- Attribution text, if required: None
+- Intended use: canonical low-volume Spanish Lab background music for card, A1/A2, and Camino episodes
+- Notes: MP3 render of the clean flamenco-tango draft family; use with ducking enabled and a quiet project-level gain.
+
 ## assets/audio/frases_a1_ambient.wav
 
 - Source URL: N/A, generated locally for this project
@@ -77,4 +89,3 @@ The following 3 files under `assets/audio/sfx/` are project-owned original proce
 - Author: Claude Code session for this project
 - License: Project-owned original procedural audio; no third-party samples (CC0 equivalent for project integration)
 - Attribution text, if required: None
-

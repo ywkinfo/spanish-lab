@@ -88,12 +88,24 @@ def render_diary_montage(scenes: list[dict], design: dict) -> Image.Image:
     title_font = _load_font(font_bold_path, 48, font_index)
     sub_font = _load_font(font_regular_path, 24, font_index_ko)
     
-    title_text = "Un día de Lucía — el día entero"
-    sub_text = "Primero (먼저)  ➔  Luego (그다음)  ➔  Después (그 후)  ➔  Al final (마지막에)"
-    
-    draw.text((120, 80), title_text, font=title_font, fill=text_color)
-    draw.text((120, 145), sub_text, font=sub_font, fill=scene_color)
-    draw.line((120, 195, width - 120, 195), fill=(220, 218, 210), width=2)
+    title_text = str(design.get("montage_title", design.get("intro_title", "Un día de Lucía")))
+    subtitle_text = str(design.get("montage_subtitle", "el día entero"))
+    ko_text = str(design.get("montage_ko", design.get("intro_ko", "")))
+    order_text = str(
+        design.get(
+            "montage_order_text",
+            "Primero (먼저)  ➔  Luego (그다음)  ➔  Después (그 후)  ➔  Al final (마지막에)",
+        )
+    )
+    heading_text = f"{title_text} — {subtitle_text}" if subtitle_text else title_text
+
+    draw.text((120, 76), heading_text, font=title_font, fill=text_color)
+    header_y = 142
+    if ko_text:
+        draw.text((120, header_y), ko_text, font=sub_font, fill=muted_text_color)
+        header_y += 34
+    draw.text((120, header_y), order_text, font=sub_font, fill=scene_color)
+    draw.line((120, header_y + 50, width - 120, header_y + 50), fill=(220, 218, 210), width=2)
     
     # 2. Grid Constants for 1080p
     col_width = 370
@@ -101,7 +113,7 @@ def render_diary_montage(scenes: list[dict], design: dict) -> Image.Image:
     gap_x = 50
     gap_y = 110
     start_x = 120
-    start_y = 240
+    start_y = header_y + 95
     
     card_font_num = _load_font(font_bold_path, 22, font_index)
     card_font_title = _load_font(font_regular_path, 18, font_index_ko)
@@ -127,7 +139,8 @@ def render_diary_montage(scenes: list[dict], design: dict) -> Image.Image:
                     cw = sw
                     ch = cw / aspect
                     cx = 0
-                    cy = (sh - ch) / 2
+                    y_ratio = design.get("diary_crop_y_ratio", 0.5) if design else 0.5
+                    cy = (sh - ch) * y_ratio
                 
                 cropped = s_img.crop((int(cx), int(cy), int(cx + cw), int(cy + ch)))
                 resized = cropped.resize((col_width, col_height), Image.Resampling.LANCZOS)
@@ -172,7 +185,8 @@ def render_diary_background(segment: dict, timing: DiaryTiming, design: dict) ->
         return render_diary_montage(STORY_SCENES, design)
 
     elif seg_type == "intro" or seg_type == "outro":
-        illustration_path = "assets/story/lucia_scene_01_morning.png" if seg_type == "intro" else "assets/story/lucia_scene_08_diary.png"
+        default_illustration_path = "assets/story/lucia_scene_01_morning.png" if seg_type == "intro" else "assets/story/lucia_scene_08_diary.png"
+        illustration_path = design.get("diary_intro_background_path", default_illustration_path) if seg_type == "intro" else design.get("diary_outro_background_path", default_illustration_path)
         img_path = Path(illustration_path)
         
         if img_path.exists():
@@ -188,33 +202,86 @@ def render_diary_background(segment: dict, timing: DiaryTiming, design: dict) ->
                     cw = sw
                     ch = cw / aspect
                     cx = 0
-                    cy = (sh - ch) / 2
+                    y_ratio = design.get("diary_crop_y_ratio", 0.5) if design else 0.5
+                    cy = (sh - ch) * y_ratio
                 cropped = s_img.crop((int(cx), int(cy), int(cx + cw), int(cy + ch)))
                 resized = cropped.resize((width, height), Image.Resampling.LANCZOS)
-                image = Image.blend(resized, Image.new("RGB", (width, height), bg_color), alpha=0.88)
+                # Keep the episode image visible. Previous intro/outro frames blended
+                # the art into the paper background too strongly, so the approved
+                # image direction looked almost unreflected in the rendered video.
+                image_alpha = float(design.get("diary_intro_image_blend_alpha", 0.38))
+                image = Image.blend(resized, Image.new("RGB", (width, height), bg_color), alpha=image_alpha)
         else:
             image = Image.new("RGB", (width, height), bg_color)
             
         draw = ImageDraw.Draw(image)
-        draw.rectangle((0, 0, 36, height), fill=COLOR_BLOCKS["neutral"])
+        title_font = _load_font(font_bold_path, int(design.get("diary_intro_title_font_size", 72)), font_index)
+        sub_font = _load_font(font_regular_path, int(design.get("diary_intro_subtitle_font_size", 36)), font_index_ko)
+        body_font = _load_font(font_regular_path, int(design.get("diary_intro_body_font_size", 42)), font_index_ko)
+        ko_font = _load_font(font_regular_path, int(design.get("diary_intro_ko_font_size", 44)), font_index_ko)
         
-        title_font = _load_font(font_bold_path, 72, font_index)
-        sub_font = _load_font(font_regular_path, 36, font_index_ko)
-        body_font = _load_font(font_regular_path, 42, font_index_ko)
-        
-        title_text = design.get("intro_title", "Un día de Lucía")
-        sub_text = design.get("intro_subtitle", "Español A1 · Historia") if seg_type == "intro" else "Fin de la lección"
+        title_text = design.get("intro_title", "Un día de Lucía") if seg_type == "intro" else design.get("outro_title", "Muy bien")
+        sub_text = design.get("intro_subtitle", "Español A1 · Historia") if seg_type == "intro" else design.get("outro_subtitle", "Fin de la lección")
         body_text = timing.text_es
-        
-        draw.text((120, 150), title_text, font=title_font, fill=text_color)
-        draw.text((120, 248), sub_text, font=sub_font, fill=COLOR_BLOCKS["neutral"])
-        draw.line((120, 315, width - 120, 315), fill=(220, 218, 210), width=3)
-        
-        lines = wrap_text(body_text, body_font, width - 240, draw)
-        y = 375
-        for line in lines:
-            draw.text((120, y), line, font=body_font, fill=text_color)
-            y += 68
+        ko_text = design.get("intro_ko", "") if seg_type == "intro" else design.get("outro_ko", "")
+        layout = str(design.get("diary_intro_layout", "left"))
+
+        if layout == "center_card":
+            card_w = int(design.get("diary_intro_card_w", width * 0.74))
+            card_h = int(design.get("diary_intro_card_h", height * 0.66))
+            card_x = (width - card_w) // 2
+            card_y = (height - card_h) // 2
+            overlay = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+            odraw = ImageDraw.Draw(overlay)
+            odraw.rounded_rectangle(
+                (card_x, card_y, card_x + card_w, card_y + card_h),
+                radius=44,
+                fill=tuple(design.get("diary_intro_card_fill", (255, 250, 239, 140))),
+                outline=tuple(design.get("diary_intro_card_outline", (255, 255, 255, 120))),
+                width=3,
+            )
+            image = Image.alpha_composite(image.convert("RGBA"), overlay).convert("RGB")
+            draw = ImageDraw.Draw(image)
+
+            center_x = width // 2
+            y = card_y + int(design.get("diary_intro_card_pad_top", 72))
+            for text, font, fill, gap in [
+                (title_text, title_font, text_color, int(design.get("diary_intro_title_gap", 34))),
+                (sub_text, sub_font, COLOR_BLOCKS["neutral"], int(design.get("diary_intro_subtitle_gap", 44))),
+            ]:
+                bbox = draw.textbbox((0, 0), text, font=font)
+                draw.text((center_x - (bbox[2] - bbox[0]) // 2, y), text, font=font, fill=fill)
+                y += (bbox[3] - bbox[1]) + gap
+
+            line_y = y - 14
+            draw.line((card_x + 150, line_y, card_x + card_w - 150, line_y), fill=(200, 195, 184), width=3)
+            y += int(design.get("diary_intro_body_top_gap", 34))
+
+            lines = wrap_text(body_text, body_font, card_w - 250, draw)
+            body_step = int(design.get("diary_intro_body_line_step", 70))
+            for line in lines:
+                bbox = draw.textbbox((0, 0), line, font=body_font)
+                draw.text((center_x - (bbox[2] - bbox[0]) // 2, y), line, font=body_font, fill=text_color)
+                y += body_step
+
+            if ko_text:
+                y += int(design.get("diary_intro_ko_top_gap", 24))
+                ko_lines = wrap_text(str(ko_text), ko_font, card_w - 250, draw)
+                ko_step = int(design.get("diary_intro_ko_line_step", 56))
+                for line in ko_lines:
+                    bbox = draw.textbbox((0, 0), line, font=ko_font)
+                    draw.text((center_x - (bbox[2] - bbox[0]) // 2, y), line, font=ko_font, fill=muted_text_color)
+                    y += ko_step
+        else:
+            draw.rectangle((0, 0, 36, height), fill=COLOR_BLOCKS["neutral"])
+            draw.text((120, 150), title_text, font=title_font, fill=text_color)
+            draw.text((120, 248), sub_text, font=sub_font, fill=COLOR_BLOCKS["neutral"])
+            draw.line((120, 315, width - 120, 315), fill=(220, 218, 210), width=3)
+            lines = wrap_text(body_text, body_font, width - 240, draw)
+            y = 375
+            for line in lines:
+                draw.text((120, y), line, font=body_font, fill=text_color)
+                y += 68
         return image
         
     elif seg_type == "scene_header":
@@ -235,7 +302,8 @@ def render_diary_background(segment: dict, timing: DiaryTiming, design: dict) ->
                     cw = sw
                     ch = cw / aspect
                     cx = 0
-                    cy = (sh - ch) / 2
+                    y_ratio = design.get("diary_crop_y_ratio", 0.5) if design else 0.5
+                    cy = (sh - ch) * y_ratio
                 cropped = s_img.crop((int(cx), int(cy), int(cx + cw), int(cy + ch)))
                 resized = cropped.resize((width, height), Image.Resampling.LANCZOS)
                 blurred = resized.filter(ImageFilter.GaussianBlur(15))
@@ -321,60 +389,75 @@ def render_diary_caption(timing: DiaryTiming, design: dict) -> Image.Image | Non
             
     draw = ImageDraw.Draw(overlay)
     
-    # 2. Compute dynamic heights to prevent overlapping
-    speaker_font = _load_font(font_bold_path, 33, font_index)
-    es_font = _load_font(font_bold_path, 51, font_index)
-    ko_font = _load_font(font_bold_path, 36, font_index_ko) # Bumped size and weight
+    # 2. Compute dynamic heights to prevent overlapping. Default values preserve
+    # older diary renders; newer projects can opt into larger captions via DESIGN.
+    speaker_font_size = int(design.get("diary_caption_speaker_font_size", 33))
+    es_font_size = int(design.get("diary_caption_es_font_size", 51))
+    ko_font_size = int(design.get("diary_caption_ko_font_size", 36))
+    es_line_step = int(design.get("diary_caption_es_line_step", max(58, es_font_size + 7)))
+    ko_line_step = int(design.get("diary_caption_ko_line_step", max(42, ko_font_size + 6)))
+    speaker_step = int(design.get("diary_caption_speaker_step", max(58, speaker_font_size + 25)))
+    interline_gap = int(design.get("diary_caption_interline_gap", 18))
+    panel_w = int(design.get("diary_caption_panel_w", 1650))
+    panel_margin_x = int(design.get("diary_caption_margin_x", 60))
+    panel_pad_y = int(design.get("diary_caption_pad_y", 24))
+    panel_min_h = int(design.get("diary_caption_panel_min_h", 230))
+    panel_bottom = int(design.get("diary_caption_panel_bottom", 40))
+    panel_alpha = int(design.get("diary_caption_panel_alpha", 130))
+
+    speaker_font = _load_font(font_bold_path, speaker_font_size, font_index)
+    es_font = _load_font(font_bold_path, es_font_size, font_index)
+    ko_font = _load_font(font_bold_path, ko_font_size, font_index_ko)
     
-    panel_w = 1650
-    es_lines = wrap_text(timing.text_es, es_font, panel_w - 120, draw)
-    ko_lines = wrap_text(timing.text_ko or "", ko_font, panel_w - 120, draw)
+    es_lines = wrap_text(timing.text_es, es_font, panel_w - (panel_margin_x * 2), draw)
+    ko_lines = wrap_text(timing.text_ko or "", ko_font, panel_w - (panel_margin_x * 2), draw)
     
-    needed_h = 24 * 2  # Top/bottom margins
+    needed_h = panel_pad_y * 2
     if timing.speaker:
-        needed_h += 58
-    needed_h += len(es_lines) * 58
-    needed_h += 18  # Spacing between Spanish and Korean text
-    needed_h += len(ko_lines) * 42
+        needed_h += speaker_step
+    needed_h += len(es_lines) * es_line_step
+    needed_h += interline_gap
+    needed_h += len(ko_lines) * ko_line_step
     
-    panel_h = max(230, needed_h)
+    panel_h = max(panel_min_h, needed_h)
     panel_x = (width - panel_w) // 2
-    panel_y = height - panel_h - 40
+    panel_y = height - panel_h - panel_bottom
     
     # 3. Draw a shorter translucent panel (rounded rectangle)
     draw.rounded_rectangle(
         (panel_x, panel_y, panel_x + panel_w, panel_y + panel_h),
         radius=24,
-        fill=(250, 249, 245, 130),
+        fill=(250, 249, 245, panel_alpha),
         outline=(210, 208, 198, 160),
         width=2
     )
     
-    text_x = panel_x + 60
-    current_y = panel_y + 24
+    text_x = panel_x + panel_margin_x
+    current_y = panel_y + panel_pad_y
     
     # Draw speaker badge if present
     if timing.speaker:
         sp_text = timing.speaker
         sp_w = draw.textbbox((0, 0), sp_text, font=speaker_font)[2]
+        badge_color = design.get("speaker_colors", {}).get(timing.speaker, scene_color)
         draw.rounded_rectangle(
             (text_x, current_y, text_x + sp_w + 30, current_y + 42),
             radius=8,
-            fill=scene_color,
+            fill=badge_color,
         )
         draw.text((text_x + 15, current_y + 3), sp_text, font=speaker_font, fill=(255, 255, 255))
-        current_y += 58
+        current_y += speaker_step
     
     # Spanish text
     for line in es_lines:
         draw.text((text_x, current_y), line, font=es_font, fill=text_color)
-        current_y += 58
+        current_y += es_line_step
         
     # Korean text
-    current_y += 18
+    current_y += interline_gap
     for line in ko_lines:
         draw.text((text_x, current_y), line, font=ko_font, fill=muted_text_color)
-        current_y += 42
+        current_y += ko_line_step
         
     return overlay
 
@@ -490,7 +573,8 @@ def build_diary_video_clip(segments: list[dict], design: dict | None, timings: l
                 w_f = source_w
                 h_f = w_f / aspect
                 x_f = 0.0
-                y_f = (source_h - h_f) / 2.0
+                y_ratio = design.get("diary_crop_y_ratio", 0.5) if design else 0.5
+                y_f = (source_h - h_f) * y_ratio
             base_frame = {"x": x_f, "y": y_f, "w": w_f, "h": h_f}
             
             # Closure for frame generator capturing beat_img and base_frame
