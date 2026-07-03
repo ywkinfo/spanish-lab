@@ -11,7 +11,7 @@ STATUS: draft — awaiting 8 scene images in assets/images/camino_a2_ep02_la_rut
 
 from __future__ import annotations
 
-IMAGE_PATH = ""
+IMAGE_PATH = "assets/images/camino_a2_ep02_la_ruta/scene_01_map_on_table.png"
 DESCRIP_PATH = "camino-a2-ep02-la-ruta/descrip.md"
 OUTPUT_NAME = "la-ruta"
 PUBLIC_SLUG = "camino-a2-ep02-la-ruta"
@@ -23,12 +23,7 @@ LEVEL = "A2+/B1-low"
 LANGUAGE = "es"
 RENDER_VERSION = 1
 RENDER_TYPE = "diary"
-# NOTE: no dedicated Ep02 thumbnail exists yet (blocked on scene art, same as the
-# module image assets below). Left empty for now; the ship session must wire a
-# real "thumbs/camino-a2-ep02-la-ruta-draft.jpg" once the designer produces one
-# (see build/publish.py — THUMBNAIL_PATH is only enforced at publish time, so an
-# empty string here does not block check/debug/test/lint-spanish/tts).
-THUMBNAIL_PATH = ""
+THUMBNAIL_PATH = "thumbs/camino-a2-ep02-la-ruta-draft.jpg"
 YOUTUBE_TITLE = (
     "[스페인어 듣기 A2+] 어느 길로 갈까? | La ruta Camino Ep.02"
 )
@@ -465,6 +460,7 @@ SEGMENT_SFX: list[dict] = []
 
 def _build_diary_segments() -> list[dict]:
     """Generate SEGMENTS from STORY_SCENES for the diary render pipeline."""
+    debug_frame = {"x": 0, "y": 0, "w": 1920, "h": 1080}
     segments: list[dict] = [
         {
             "type": "intro",
@@ -537,9 +533,20 @@ def _build_diary_segments() -> list[dict]:
                 "más bonito.\" Y tú, ¿qué camino prefieres? Escríbelo en los comentarios. "
                 "En el próximo episodio, los tres eligen la fecha de salida. ¡Buen Camino!"
             ),
-            "duration_s": 15.0,
+            "duration_s": 19.0,
         }
     )
+    for seg in segments:
+        seg.setdefault("frame", dict(debug_frame))
+        if "text" not in seg:
+            if seg.get("type") == "scene_header":
+                seg["text"] = seg.get("title_es", "")
+            elif seg.get("type") == "diary_line":
+                speaker = seg.get("speaker", "")
+                prefix = f"{speaker}: " if speaker else ""
+                seg["text"] = f"{prefix}{seg.get('text_es', '')}"
+            else:
+                seg["text"] = seg.get("text_es", "")
     return segments
 
 
